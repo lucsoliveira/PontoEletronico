@@ -1,8 +1,8 @@
 var express = require('express');
 var app = express();
 
-
 require('./db/controladorDB')(app);
+require('./routes/controladorRotas')(app);
 
 app.get('/', function (req, res) {
   res.send('Hello World!');

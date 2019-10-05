@@ -1,64 +1,57 @@
 module.exports = function(app, Sequelize, sequelize){
 
-const Timing = sequelize.define('timing', {
+const Colaborador = sequelize.define('colaborador', {
     id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true
     },
-    idUser: {
-      type: Sequelize.INTEGER,
+    nomeCompleto: {
+      type: Sequelize.STRING,
     },
-    idTask: {
-      type: Sequelize.INTEGER,
+    dataNascimento: {
+      type: Sequelize.STRING,
     },
-    startAt: {
+    endereco: {
+      type: Sequelize.STRING,
+    },
+    rg: {
+      type: Sequelize.STRING
+    },
+    cpf: {
       type: Sequelize.STRING
     },
 
-    finishedAt: {
+    email: {
         type: Sequelize.STRING
       },
 
-      timeSecondsTask: {
-        type: Sequelize.INTEGER
-      },
-      productivity: {
-        type: Sequelize.INTEGER
-      },
-
-      humorBefore: {
-        type: Sequelize.INTEGER
-        },
-    
-      humorAfter: {
-      type: Sequelize.INTEGER
-      },
-
-      moreInformation: {
+      telefone: {
         type: Sequelize.STRING
-      },  
+      },
+      senha: {
+        type: Sequelize.STRING
+      },
      
   });
 
 
 /*
 // force: true will drop the table if it already exists
-Timing.sync({force: true}).then(() => {
+Colaborador.sync({force: true}).then(() => {
   // Table created
-  return Timing.create({
-    idTask: 111,
-    idUser: 212,
-    startAt: 'skdjioj',
-    finishedAt: 'sajkondjasd',
-    timeSecondsTask: 'sioadjiasd',
-    productivity: 2,
-    humorAfter: 1,
-    humorBefore: 1,
-    moreInformation: 'Apenas um teste',
+  return Colaborador.create({
+    nomeCompleto: '111',
+    dataNascimento: '212',
+    endereco: 'skdjioj',
+    rg: 'sajkondjasd',
+    cpf: 'sioadjiasd',
+    email: '2',
+    telefone: '1',
+    senha: '1',
   });
 });
 */
-  global.Timing = Timing;
+  global.Colaborador = Colaborador;
 
 }
