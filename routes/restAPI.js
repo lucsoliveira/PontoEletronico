@@ -29,7 +29,16 @@ module.exports = function(app){
 
         var limit = req.query.limit;
 
-        Registro.findAll({ limit: limit }).then(registros => {
+        Registro.findAll(
+            { 
+                limit: limit ,
+                order: [
+                    ['id', 'DESC']
+                ] 
+            }, 
+            
+            
+            ).then(registros => {
 
             getJsonHeaders(req, res);
 

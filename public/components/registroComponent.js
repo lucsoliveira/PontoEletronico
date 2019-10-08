@@ -45,8 +45,9 @@ Vue.component('registro-item', {
     },
     template: `
     <tr>
-                            
-    <td class="txt-oflo">{{ colaboradorDados.nomeCompleto }}</td>
+                           
+    <td class="txt-oflo">#{{ id }}</td> 
+    <td class="txt-oflo">{{ colaboradorDados.id }} - {{ colaboradorDados.nomeCompleto }}</td>
 
     <td>
     <span v-if="tipo == 1" class="label label-success label-rounded">ENTRADA</span> 
@@ -54,7 +55,17 @@ Vue.component('registro-item', {
     
     </td>
     <td class="txt-oflo">{{ createdAt }}</td>
-    <td><span class="font-medium">$24</span></td>
+    <td>
+        
+        <button alt="Dados do colaborador"  title="Dados do colaborador" type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#myModal">
+        <i class="mdi mdi-face"></i>
+        </button>
+
+        <button alt="Re-enviar comprovante"  title="Re-enviar comprovante" type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#myModal">
+        <i class="mdi mdi-email"></i>
+        </button>
+    
+    </td>
     </tr>
 
     `
@@ -71,12 +82,13 @@ Vue.component('registros-recentes',{
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Registros recentes</h4>
+            <h4 class="card-title">Registros recentes</h4>
             </div>
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
                         <tr>
+                        <th class="border-top-0">REGISTRO</th>
                             <th class="border-top-0">COLABORADOR</th>
                             <th class="border-top-0">REGISTRO</th>
                             <th class="border-top-0">DATA</th>
@@ -102,6 +114,13 @@ Vue.component('registros-recentes',{
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div class="card-footer">
+        <h4>
+            <center>
+            <a href="/registros">Ver lista completa de registros</a>
+            </center>
+        </h4>
         </div>
     </div>
 </div>
