@@ -1,5 +1,7 @@
 module.exports = function(app){
 
-  require('./rotas')(app);//Pega todos os modelos
+  require('./dashboard')(app);//Pega todos os modelos
+  require('./restAPI')(app);//Pega todos os modelos
+
 
 }
