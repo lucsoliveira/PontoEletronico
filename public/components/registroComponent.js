@@ -74,7 +74,6 @@ Vue.component('item-activity', {
 })
 
 Vue.component('registros-recentes',{
-    name: "registrosRecentes",
 	props: {
 		idUser: Number,
 	},
@@ -147,58 +146,6 @@ Vue.component('registros-recentes',{
     </div>
 </div>
 
-    <!--
-    <div class="col-lg-6">
-        <div class="au-card au-card--no-shadow au-card--no-pad m-b-40">
-            <div class="au-card-title" style="background-image:url('/misc/images/bg-title-01.jpg');">
-                <div class="bg-overlay bg-overlay--blue"></div>
-                <h3>
-                    <i class="zmdi zmdi-account-calendar"></i>Minhas Atividades</h3>
-
-                <button 
-                class="au-btn-plus"
-                data-toggle="modal" 
-                data-target="#addActivityModal"
-                >
-                    <i class="zmdi zmdi-plus"></i>
-                </button>
-
-
-            </div>
-
-            <div class="au-task js-list-load">
-
-                <div class="au-task__title">
-                    <p>Cronometre suas atividades para gerar estatísticas</p>
-                </div>
-            <div class="au-task-list js-scrollbar3">
-
-                <div style="margin:50px;" v-if="!items || items.length == null">
-            
-                    <center>
-                        <h3>Ops! Você ainda não cadastrou atividades :( </h3>
-                        <p>Clique no botão verde para adicionar.</p>
-                    </center>
-                </div>
-
-                
-                <item-activity 
-
-                    v-for="item in items" 
-                    v-bind:key="item.id" 
-                    :id="item.id" 
-                    :idUser="idUser"
-                    :title="item.titleTask"
-                    :color="item.color">
-                </item-activity>
-
-            </div> 
-            
-            </div>
-            </div>
-        </div>
-
-        list tasks-->
   `,
 	data: function () {
 		return {
@@ -211,7 +158,7 @@ Vue.component('registros-recentes',{
   
   created() {
 	//get data from API
-    this.getActivitiesFromServer();
+    //this.getActivitiesFromServer();
   },
 
   methods: {
