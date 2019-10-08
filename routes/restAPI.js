@@ -23,8 +23,8 @@ module.exports = function(app){
   
     });
 
-    //  -> api/get/registro/ultimos?limit=10
-    app.get('/api/get/registro/ultimos', 
+    //  -> api/get/registro/recentes?limit=10
+    app.get('/api/get/registro/recentes', 
     function(req, res){
 
         var limit = req.query.limit;
