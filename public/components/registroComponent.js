@@ -32,7 +32,6 @@ Vue.component('registro-item', {
         
                     this.colaboradorDados = res.data;//salva os dados em forma de lista em items
 
-                    console.log(this.colaboradorDados.nomeCompleto)
                 }
         
                 if(res.type == 'error'){
@@ -57,11 +56,11 @@ Vue.component('registro-item', {
     <td class="txt-oflo">{{ createdAt }}</td>
     <td>
         
-        <button alt="Dados do colaborador"  title="Dados do colaborador" type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#myModal">
+        <button alt="Dados do colaborador"  title="Dados do colaborador" type="button" class="btn btn-info btn-md">
         <i class="mdi mdi-face"></i>
         </button>
 
-        <button alt="Re-enviar comprovante"  title="Re-enviar comprovante" type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#myModal">
+        <button alt="Re-enviar comprovante"  title="Re-enviar comprovante" type="button" class="btn btn-warning btn-md" data-toggle="modal" data-target="#myModal">
         <i class="mdi mdi-email"></i>
         </button>
     
@@ -114,13 +113,6 @@ Vue.component('registros-recentes',{
                     </tbody>
                 </table>
             </div>
-        </div>
-        <div class="card-footer">
-        <h4>
-            <center>
-            <a href="/registros">Ver lista completa de registros</a>
-            </center>
-        </h4>
         </div>
     </div>
 </div>
