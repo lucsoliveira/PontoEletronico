@@ -1,74 +1,61 @@
-Vue.component('item-activity', {
+Vue.component('registro-item', {
     data: function () {
       return {
-        count: 0
+        count: 0,
+        colaboradorDados: [],
+        naoExisteColaborador: false
       }
     },
-    props: ['id', 'idUser', 'title','color'],
+
+    /*
+
+                            :id="item.id" 
+                        :colaboradorId="item.colaboradorId"
+                        :tipo="item.tipo"
+                        :createdAt="item.createdAt"
+
+                        */
+    props: ['id', 'colaboradorId', 'tipo','createdAt'],
+    created() {
+        //get data from API
+        this.getDadosColaboradorDoServidor();
+    },
     methods: {
 
-        playTask : function(event){
-            
-            app.$refs.focousMode.setData(this.idUser,this.id, this.title);
 
-            //app.$refs.listActivities.forceUpdate();
-        }
+        getDadosColaboradorDoServidor(){
+            fetch('api/get/colaborador/' + this.colaboradorId)
+            .then(response => response.json())
+            .then(res => {
+      
+                if(res.type == 'success'){
+        
+                    this.colaboradorDados = res.data;//salva os dados em forma de lista em items
+
+                    console.log(this.colaboradorDados.nomeCompleto)
+                }
+        
+                if(res.type == 'error'){
+        
+                    this.naoExisteRegistros = true;
+                }
+            })
+        },
 
     },
     template: `
+    <tr>
+                            
+    <td class="txt-oflo">{{ colaboradorDados.nomeCompleto }}</td>
+
+    <td>
+    <span v-if="tipo == 1" class="label label-success label-rounded">ENTRADA</span> 
+    <span v-else class="label label-purple label-rounded">SAÍDA</span> 
     
-    <div v-else :class="'au-task__item au-task__item--' + color">
-
-    <div  class="au-task__item-inner">
-
-    <div class="row">
-
-    <div class="col-9">
-        <h5 class="task">
-            <a href="#">{{ title }}</a>
-        </h5>
-
-        <span class="time">Duração recomendada</span>
-        
-    </div>
-    <!-- Button trigger modal -->
-
-    <div class="col-1">
- 
-        <button 
-        type="button" 
-        v-on:click="playTask"
-         data-toggle="modal" 
-          data-target="#myModal" 
-        class="btn btn-success btn-sm buttonsTask open-FocousModeDialog"
-        :data-id="id"
-        >
-        
-        <i class="fa fa-play"></i>
-        
-        </button>
-
-    </div>
-    
-
-    <div class="col-1">
- 
-        <a :href="'/dashboard/task/edit/' + id" >
-        <button 
-        id="btnPlay"
-        type="button" 
-        class="btn btn-info btn-sm buttonsTask"
-        >
-
-        <i class="fa fa-edit"></i>
-
-        </button>
-        </a>
-    </div>
-
-</div>
-</div>
-</div>
+    </td>
+    <td class="txt-oflo">{{ createdAt }}</td>
+    <td><span class="font-medium">$24</span></td>
+    </tr>
 
     `
 })
@@ -97,48 +84,21 @@ Vue.component('registros-recentes',{
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            
-                            <td class="txt-oflo">Elite admin</td>
-                            <td><span class="label label-success label-rounded">Entrada</span> </td>
-                            <td class="txt-oflo">April 18, 2017</td>
-                            <td><span class="font-medium">$24</span></td>
-                        </tr>
-                        <tr>
-                            
-                            <td class="txt-oflo">Real Homes WP Theme</td>
-                            <td><span class="label label-info label-rounded">EXTENDED</span></td>
-                            <td class="txt-oflo">April 19, 2017</td>
-                            <td><span class="font-medium">$1250</span></td>
-                        </tr>
-                        <tr>
-                            
-                            <td class="txt-oflo">Ample Admin</td>
-                            <td><span class="label label-purple label-rounded">Saída</span></td>
-                            <td class="txt-oflo">April 19, 2017</td>
-                            <td><span class="font-medium">$1250</span></td>
-                        </tr>
-                        <tr>
-                            
-                            <td class="txt-oflo">Medical Pro WP Theme</td>
-                            <td><span class="label label-success label-rounded">Sale</span></td>
-                            <td class="txt-oflo">April 20, 2017</td>
-                            <td><span class="font-medium">-$24</span></td>
-                        </tr>
-                        <tr>
-                            
-                            <td class="txt-oflo">Hosting press html</td>
-                            <td><span class="label label-success label-rounded">SALE</span></td>
-                            <td class="txt-oflo">April 21, 2017</td>
-                            <td><span class="font-medium">$24</span></td>
-                        </tr>
-                        <tr>
-                            
-                            <td class="txt-oflo">Digital Agency PSD</td>
-                            <td><span class="label label-danger label-rounded">Tax</span> </td>
-                            <td class="txt-oflo">April 23, 2017</td>
-                            <td><span class="font-medium">-$14</span></td>
-                        </tr>
+
+                        <!--item registro-->
+                        <registro-item
+
+                        v-for="item in items" 
+                        v-bind:key="item.id" 
+                        :id="item.id" 
+                        :colaboradorId="item.colaboradorId"
+                        :tipo="item.tipo"
+                        :createdAt="item.createdAt">
+                         </registro-item>
+
+                        <!--fim item registro-->
+
+                       
                     </tbody>
                 </table>
             </div>
@@ -150,7 +110,9 @@ Vue.component('registros-recentes',{
 	data: function () {
 		return {
       items: [], 
+      dadosColaborador: [],
       timeParaComparar: '',
+      naoExisteRegistros: false
       
       
 		}
@@ -158,23 +120,34 @@ Vue.component('registros-recentes',{
   
   created() {
 	//get data from API
-    //this.getActivitiesFromServer();
+    this.getRegistrosDoServidor();
   },
 
   methods: {
-    //id, title, status, userId, createdAt, updatedAt
+    
 
-    getActivitiesFromServer(){
-        fetch('/api/task/list?idUser=' + this.idUser)
+    getRegistrosDoServidor(){
+
+        fetch('api/get/registro/recentes?limit=10')
         .then(response => response.json())
-        .then(json => {
+        .then(res => {
   
-        this.items = json.tasks; 
+        if(res.type == 'success'){
+
+            this.items = res.data;//salva os dados em forma de lista em items
+        }
+
+        if(res.type == 'error'){
+
+            this.naoExisteRegistros = true;
+        }
+
         })
+
     },
     forceUpdate() {
         
-      this.getActivitiesFromServer();
+      this.getRegistrosDoServidor();
 
       }
     },
