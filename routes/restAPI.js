@@ -55,6 +55,97 @@ module.exports = function(app){
   
     });
 
+    //POST
+    app.post('/api/post/registro', function(req,res){
+
+        var colaboradorCPF = req.body.colaboradorCpf;
+        var colaboradorSenha = req.body.colaboradorSenha;
+
+        console.log('cpf: ' + colaboradorCPF + ' senha: ' + colaboradorSenha)
+
+        Colaborador.findOne({ 
+            where: { cpf : colaboradorCPF, senha: colaboradorSenha} 
+        })
+        .then(colaborador => {
+
+            
+            if(!colaborador){
+
+                sendMsgJson(req, res, 'error', 'Colaborador não encontrado.', null);
+
+            }else{
+
+                
+
+                    Registro.findOne({ 
+                        limit: 1,
+                        where: {
+                            //your where conditions, or without them if you need ANY entry
+                            colaboradorId: colaborador.id
+                          },
+                        order: [
+                            ['id', 'DESC']
+                        ] 
+                    }).then(function(registro){
+
+                        
+
+                        console.log(registro)
+                        if(!registro || registro == null || registro.length == 0){
+
+                            console.log('entrou aqui 2')
+                            Registro.create({ 
+                                colaboradorId: colaborador.id, 
+                                tipo: 1,
+                            });
+
+                            console.log('entrou nor egistro')
+                            
+                        sendMsgJson(req, res, 'entrada', 'Registro de entrada gravado.', null);
+
+                        }else{
+
+                            if(registro.tipo == 1){
+
+                                Registro.create({ 
+                                    colaboradorId: colaborador.id, 
+                                    tipo: 0,
+                                });
+                                
+                            console.log('entrou no tipo 1')
+
+                                
+                        sendMsgJson(req, res, 'saida', 'Registro de saída gravado.', null);
+                            }
+    
+                            if(registro.tipo == 0){
+    
+                                
+                            console.log('entrou nor tipo 0')
+
+                                Registro.create({ 
+                                    colaboradorId: colaborador.id, 
+                                    tipo: 1,
+                                });
+
+                                sendMsgJson(req, res, 'entrada', 'Registro de entrada gravado.', null);
+                                
+                            }
+    
+
+                        }
+                        
+                        //only difference is that you get users list limited to 1
+                        //entries[0]
+                    }); 
+                    
+
+
+            }
+            
+        })
+
+    });
 
     function sendMsgJson(req,res, type, msg, data){
         
