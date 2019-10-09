@@ -1,4 +1,5 @@
 
+
             <div class="page-breadcrumb">
                 <div class="row">
                     <div class="col-5 align-self-center">
@@ -25,6 +26,28 @@
             <!-- Container fluid  -->
             <!-- ============================================================== -->
             <div class="container-fluid">
+
+                    <% if(msg) { %> 
+                        <% if(msg == 'success') { %>
+                            <div class="alert alert-success" role="alert">
+                                
+                                Colaborador adicionado com sucesso! Clique <a href="/dashboard">aqui</a> para retornar à página principal.
+                                
+                            </div>
+                        
+                        <% } %>
+
+                        <% if(msg == 'error') { %>
+                            <div class="alert alert-danger" role="alert">
+                                
+                                Colaborador com RG já cadastrado. Tente novamente com outro RG.
+                            </div>
+                        
+                        <% } %>
+
+                    <% } %>
+            
+                    
                 <!-- ============================================================== -->
                 <!-- Start Page Content -->
                 <!-- ============================================================== -->
@@ -35,7 +58,7 @@
                     <div class="col-lg-8 col-xlg-9 col-md-7">
                         <div class="card">
                             <div class="card-body">
-                                <form class="form-horizontal form-material">
+                                <form method="POST" action="../colaborador/adicionar" enctype="application/x-www-form-urlencoded" class="form-horizontal form-material">
                                     <div class="form-group">
                                         <label class="col-md-12">Nome Completo</label>
                                         <div class="col-md-12">

@@ -3,6 +3,7 @@ var express = require('express'),
     app = express();
 
 app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
 app.set('view engine', 'ejs');
 app.use(express.static('public')); //SETA PUBLICO TUDO O QUE ESTIVER NA PASTA "PUBLIC"
 app.use(express.json());
