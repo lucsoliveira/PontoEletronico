@@ -1,0 +1,68 @@
+
+            <div class="page-breadcrumb">
+                <div class="row">
+                    <div class="col-5 align-self-center">
+                        <h4 class="page-title">Dashboard</h4>
+                    </div>
+                    <div class="col-7 align-self-center">
+                        <div class="d-flex align-items-center justify-content-end">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item">
+                                        <a href="#">Home</a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Modal colaborador-->
+            <colaborador-modal></colaborador-modal>
+
+            <div class="container-fluid">
+
+                <!--botoes de adicionar colaboradores e ver registros-->
+                <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title m-b-0">Atalhos</h4>
+                                     <div class="m-t-30">
+                                        <div class="row text-center">
+                                            <div class="col-6 border-right">
+                                                
+                                            <a href="/colaborador/adicionar" 
+                                            style="text-decoration: 'none'; color:grey;" 
+                                            alt="Link para adicionar colaborador"
+                                            title="Clique aqui para adicionar um colaborador"
+                                            >
+                                                <h1 class="m-b-0"><i class="mdi mdi-account-multiple-plus"></i></h1>
+                                                <span class="font-14 text-muted">Adicionar Colaborador</span>
+                                            
+                                            </a>
+                                            </div>
+                                            
+                                            <div class="col-6">
+                                                <a href="/registros" 
+                                                    style="text-decoration: 'none'; color:grey;" 
+                                                    alt="Link para visualizar o registro completo"
+                                                    title="Clique aqui para visualizar o registro completo."
+                                                    >
+                                                    <h1 class="m-b-0"><i class="mdi mdi-timetable"></i></h1>
+                                                <span class="font-14 text-muted">Registro Completo de Entrada/Saída</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <!--component list ultimos registros-->
+                <registros-recentes></registros-recentes>
+
+            </div>
+
