@@ -35,6 +35,7 @@ Keypad meuteclado = Keypad( makeKeymap(matriz_teclas), PinosqtdLinhas, PinosqtdC
 
 void setup()
 {
+  
     Serial.begin(9600); //INICIALIZA A SERIAL
     
     //setiup do Wifi
@@ -61,32 +62,54 @@ void loop(){
     lcd.setCursor(0,1); 
     lcd.print ("LCD with ESP32");
 */
-    mostrarMensagemDisplay("Ola mundo");
-    
-    char tecla_pressionada = meuteclado.getKey(); //VERIFICA SE ALGUMA DAS TECLAS FOI PRESSIONADA
+    mostrarMensagemDisplay("Ponto Eletronico - Alfa", 2500);
 
-//  Serial.print("Digite numero do colaborador : "); //IMPRIME O TEXTO NO MONITOR SERIAL 
-
-  if(digitosColaborador < 4){
-    
-     if (tecla_pressionada){ //SE ALGUMA TECLA FOR PRESSIONADA, FAZ
-      Serial.println(tecla_pressionada); //IMPRIME NO MONITOR SERIAL A TECLA PRESSIONADA
-      delay(200);
-      digitosColaborador++;
+    while(1){
+          //Inicio para pegar os dados digitados na tela
+          char tecla_pressionada = meuteclado.getKey(); //VERIFICA SE ALGUMA DAS TECLAS FOI PRESSIONADA
+      
+      //  Serial.print("Digite numero do colaborador : "); //IMPRIME O TEXTO NO MONITOR SERIAL 
+      
+        if(digitosColaborador < 4){
+          
+           if (tecla_pressionada){ //SE ALGUMA TECLA FOR PRESSIONADA, FAZ
+            Serial.println(tecla_pressionada); //IMPRIME NO MONITOR SERIAL A TECLA PRESSIONADA
+            lcd.write(tecla_pressionada);
+            delay(200);\
+            digitosColaborador++;
+          }
+        }else{
+           Serial.println("Verificando os dados"); //IMPRIME NO MONITOR SERIAL A TECLA PRESSIONADA
+           digitosColaborador = 0;
+        }
     }
-  }else{
-     Serial.println("Verificando os dados"); //IMPRIME NO MONITOR SERIAL A TECLA PRESSIONADA
-     digitosColaborador = 0;
-  }
  
  }
 
- void mostrarMensagemDisplay(const char * mensagem){
-      lcd.print(mensagem);
+ void mostrarMensagemDisplay(String mensagem, int time){
 
-    // go to row 1 column 0, note that this is indexed at 0
-    lcd.setCursor(0,1); 
-    //lcd.print ("LCD with ESP32");
+      lcd.clear();
+    //quebra a mensagem se for nece\ssá\rio
+      if(mensagem.length() > 16){
+
+        for(int i  = 0; i <16; i++){
+          lcd.write(mensagem.charAt(i));
+        }
+
+        lcd.setCursor(0,1); 
+        
+        for(int i  = 16; i < mensagem.length(); i++){
+          lcd.write(mensagem.charAt(i));
+        }
+
+       
+      }else{
+        lcd.print(mensagem);
+      }
+
+      
+      delay(time);
+      lcd.clear();
 
     
  }
