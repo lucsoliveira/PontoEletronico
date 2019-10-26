@@ -58,18 +58,18 @@ module.exports = function(app){
     //POST
     app.post('/api/post/registro', function(req,res){
 
-        var colaboradorCPF = req.body.colaboradorCpf;
-        var colaboradorSenha = req.body.colaboradorSenha;
+        //var colaboradorCPF = req.query.colaboradorCpf;
+        var senha = req.query.senha;
 
         Colaborador.findOne({ 
-            where: { cpf : colaboradorCPF, senha: colaboradorSenha} 
+            where: { senha: senha} 
         })
         .then(colaborador => {
 
             
             if(!colaborador){
 
-                sendMsgJson(req, res, 'error', 'Colaborador não encontrado.', null);
+                sendMsgJson(req, res, 'error', 'Colaborador nao encontrado.', null);
 
             }else{
 
@@ -96,7 +96,7 @@ module.exports = function(app){
                             });
 
                             
-                        sendMsgJson(req, res, 'entrada', 'Registro de entrada gravado.', null);
+                        sendMsgJson(req, res, 'entrada', 'Registro de entrada gravado.', colaborador);
 
                         }else{
 
@@ -109,7 +109,7 @@ module.exports = function(app){
                                 
 
                                 
-                        sendMsgJson(req, res, 'saida', 'Registro de saída gravado.', null);
+                        sendMsgJson(req, res, 'saida', 'Registro de saída gravado.', colaborador);
                             }
     
                             if(registro.tipo == 0){
@@ -121,7 +121,7 @@ module.exports = function(app){
                                     tipo: 1,
                                 });
 
-                                sendMsgJson(req, res, 'entrada', 'Registro de entrada gravado.', null);
+                                sendMsgJson(req, res, 'entrada', 'Registro de entrada gravado.', colaborador);
                                 
                             }
     

@@ -2,6 +2,7 @@
 #include <Keypad.h> //Necessario para o teclado
 #include <WiFi.h> //Necessario para Wifi
 #include <HTTPClient.h> // Necessario para comunicao com o servidor
+#include "ArduinoJson.h" // Necessario para comunicao com o servidor
 
 /* Configuração Wifi */
 const char* ssid = "lucas";
@@ -25,13 +26,15 @@ char matriz_teclas[qtdLinhas][qtdColunas] = {
   {'*','0','#','D'}
 };
 
-
 byte PinosqtdLinhas[qtdLinhas] = {13, 12, 14, 27}; //PINOS UTILIZADOS PELAS LINHAS
 byte PinosqtdColunas[qtdColunas] = {26,25,33,32}; //PINOS UTILIZADOS PELAS COLUNAS
 
 //\INICIALIZAÇÃO DO TECLADO
 Keypad meuteclado = Keypad( makeKeymap(matriz_teclas), PinosqtdLinhas, PinosqtdColunas, qtdLinhas, qtdColunas); 
 /* Fim Configuração do Teclado */
+
+String senhaDigitada = "";
+String urlBase = "http://192.168.1.102:3000/api/post/registro?senha=";
 
 void setup()
 {
@@ -42,6 +45,7 @@ void setup()
     WiFi.begin(ssid, password);
  
       while (WiFi.status() != WL_CONNECTED) {
+        mostrarMensagemDisplay("Conectando na Rede...", 0);
         delay(1000);
         Serial.println("Connecting to WiFi..");
       }
@@ -54,14 +58,7 @@ void setup()
   
 }
 void loop(){
-
-  /*
-    lcd.print("Ola mundo");
-
-    // go to row 1 column 0, note that this is indexed at 0
-    lcd.setCursor(0,1); 
-    lcd.print ("LCD with ESP32");
-*/
+   
     mostrarMensagemDisplay("Ponto Eletronico - Alfa", 2500);
 
     while(1){
@@ -75,12 +72,21 @@ void loop(){
            if (tecla_pressionada){ //SE ALGUMA TECLA FOR PRESSIONADA, FAZ
             Serial.println(tecla_pressionada); //IMPRIME NO MONITOR SERIAL A TECLA PRESSIONADA
             lcd.write(tecla_pressionada);
-            delay(200);\
+            delay(200);
+
+            //acrescenta para a string
+            senhaDigitada += tecla_pressionada;
             digitosColaborador++;
           }
         }else{
-           Serial.println("Verificando os dados"); //IMPRIME NO MONITOR SERIAL A TECLA PRESSIONADA
+          
+           mostrarMensagemDisplay("Aguarde...", 2500);
            digitosColaborador = 0;
+           
+           registrarPontoServidor(senhaDigitada);//chama o servidor
+           senhaDigitada = ""; //zera a string de senha digitada
+
+              
         }
     }
  
@@ -105,37 +111,59 @@ void loop(){
        
       }else{
         lcd.print(mensagem);
+        lcd.clear();
       }
 
-      
-      delay(time);
-      lcd.clear();
+      if(time != 0){
+        delay(time);
+      }
 
     
  }
 
 
-void getDadosServidor(){
-if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
+void registrarPontoServidor(String senhaColaborador){
+if ((WiFi.status() == WL_CONNECTED)) { //Checka o status da wifi
  
     HTTPClient http;
+    http.begin(urlBase + senhaColaborador); //Url do servidor 
+    http.addHeader("Content-Type", "text/plain");             //Altera o header
  
-    http.begin("http://jsonplaceholder.typicode.com/comments?id=10"); //Specify the URL
-    int httpCode = http.GET();                                        //Make the request
+    int httpCode = http.POST("");                                        //Faz o Post do Registro
  
-    if (httpCode > 0) { //Check for the returning code
+    if (httpCode > 0) { //Checa o retorno do servidor
  
         String payload = http.getString();
         Serial.println(httpCode);
         Serial.println(payload);
+
+        //Manipulando a Resposta Json
+        char json[] = "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
+
+        DynamicJsonDocument doc(1024);
+        deserializeJson(doc, payload);
+        
+        String msg = doc["msg"];
+        String type = doc["type"];
+        String colaboradorNome    = doc["data"]["nomeCompleto"];
+        
+
+        if(type == "error"){
+          mostrarMensagemDisplay(msg, 3000);
+        }else{
+          mostrarMensagemDisplay("Ola, " + colaboradorNome + "!" , 2500);
+            mostrarMensagemDisplay(msg, 3000);
+        }
+
+        
       }
  
     else {
-      Serial.println("Error on HTTP request");
+              mostrarMensagemDisplay("Erro de comunicacao." , 2500);
     }
  
-    http.end(); //Free the resources
+    http.end(); 
   }
  
-  delay(10000);
+  delay(5000);
 }
