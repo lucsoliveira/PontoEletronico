@@ -1,5 +1,17 @@
 module.exports = function(app){
 
+    //funcao para sincronizar o horario do ponto com o servidor
+    app.get('/api/get/sincronizar/relogio', function(req,res){
+        var today = new Date();
+        var date = today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+        var time = today.getHours() + ":" + today.getMinutes();
+        var dateTime = time+' '+date;
+
+        sendMsgJson(req, res, 'success', 'Relogio sincronizado.', dateTime);
+        
+
+    });
+
     app.get('/api/get/colaborador/:id', 
     function(req, res){
 
@@ -22,6 +34,7 @@ module.exports = function(app){
           
   
     });
+
 
     //  -> api/get/registro/recentes?limit=10
     app.get('/api/get/registro/recentes', 

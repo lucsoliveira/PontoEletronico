@@ -33,8 +33,10 @@ byte PinosqtdColunas[qtdColunas] = {26,25,33,32}; //PINOS UTILIZADOS PELAS COLUN
 Keypad meuteclado = Keypad( makeKeymap(matriz_teclas), PinosqtdLinhas, PinosqtdColunas, qtdLinhas, qtdColunas); 
 /* Fim Configuração do Teclado */
 
+/* Configuração das URLs para Comunicação com o Servidor */
 String senhaDigitada = "";
 String urlBase = "http://192.168.1.102:3000/api/post/registro?senha=";
+String urlSincronizarRelogio = "http://192.168.1.102:3000/api/get/sincronizar/relogio";
 
 void setup()
 {
@@ -60,6 +62,9 @@ void setup()
 void loop(){
    
     mostrarMensagemDisplay("Ponto Eletronico - Alfa", 2500);
+    mostrarMensagemDigitarSenha();
+
+    
 
     while(1){
           //Inicio para pegar os dados digitados na tela
@@ -67,10 +72,10 @@ void loop(){
       
       //  Serial.print("Digite numero do colaborador : "); //IMPRIME O TEXTO NO MONITOR SERIAL 
       
-        if(digitosColaborador < 4){
+        if(digitosColaborador < 5){
           
            if (tecla_pressionada){ //SE ALGUMA TECLA FOR PRESSIONADA, FAZ
-            Serial.println(tecla_pressionada); //IMPRIME NO MONITOR SERIAL A TECLA PRESSIONADA
+            
             lcd.write(tecla_pressionada);
             delay(200);
 
@@ -86,12 +91,20 @@ void loop(){
            registrarPontoServidor(senhaDigitada);//chama o servidor
            senhaDigitada = ""; //zera a string de senha digitada
 
+           mostrarMensagemDigitarSenha();
               
         }
     }
  
  }
 
+void mostrarMensagemDigitarSenha(){
+
+  
+  lcd.print(sincronizacaoRelogio());
+  lcd.setCursor(0,1); 
+  lcd.print("Senha: ");
+}
  void mostrarMensagemDisplay(String mensagem, int time){
 
       lcd.clear();
@@ -111,19 +124,56 @@ void loop(){
        
       }else{
         lcd.print(mensagem);
-        lcd.clear();
       }
 
       if(time != 0){
         delay(time);
       }
+      
+      lcd.clear();
 
     
  }
 
+//Funcao de Sincronização do Relogio
+//Funcao de Comunicacao com o servidor p/ Registro de Ponto
+String sincronizacaoRelogio(){
+if ((WiFi.status() == WL_CONNECTED)) { 
+  //Checka o status da wifi
+ 
+    HTTPClient http;
+    http.begin(urlSincronizarRelogio); //Url do servidor 
 
+    int httpCode = http.GET();                                        //Faz o Post do Registro
+ 
+    if (httpCode > 0) { //Checa o retorno do servidor
+ 
+        String payload = http.getString();
+        Serial.println(httpCode);
+        Serial.println(payload);
+
+        //Manipulando a Resposta Json
+        DynamicJsonDocument doc(1024);
+        deserializeJson(doc, payload);
+        
+        String relogio = doc["data"];
+
+        return relogio;
+        
+      }else {
+              return "Erro Sincronizacao";
+    }
+ 
+    http.end(); 
+  }
+ 
+  delay(5000);
+}
+
+//Funcao de Comunicacao com o servidor p/ Registro de Ponto
 void registrarPontoServidor(String senhaColaborador){
-if ((WiFi.status() == WL_CONNECTED)) { //Checka o status da wifi
+if ((WiFi.status() == WL_CONNECTED)) { 
+  //Checka o status da wifi
  
     HTTPClient http;
     http.begin(urlBase + senhaColaborador); //Url do servidor 
@@ -138,8 +188,6 @@ if ((WiFi.status() == WL_CONNECTED)) { //Checka o status da wifi
         Serial.println(payload);
 
         //Manipulando a Resposta Json
-        char json[] = "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
-
         DynamicJsonDocument doc(1024);
         deserializeJson(doc, payload);
         
@@ -149,10 +197,14 @@ if ((WiFi.status() == WL_CONNECTED)) { //Checka o status da wifi
         
 
         if(type == "error"){
-          mostrarMensagemDisplay(msg, 3000);
+            mostrarMensagemDisplay(msg, 3000);
+            return;
+
         }else{
           mostrarMensagemDisplay("Ola, " + colaboradorNome + "!" , 2500);
             mostrarMensagemDisplay(msg, 3000);
+            return;
+
         }
 
         
@@ -160,6 +212,8 @@ if ((WiFi.status() == WL_CONNECTED)) { //Checka o status da wifi
  
     else {
               mostrarMensagemDisplay("Erro de comunicacao." , 2500);
+              return;
+            
     }
  
     http.end(); 
