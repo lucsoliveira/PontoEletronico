@@ -2,7 +2,7 @@
 #include <Keypad.h> //Necessario para o teclado
 #include <WiFi.h> //Necessario para Wifi
 #include <HTTPClient.h> // Necessario para comunicao com o servidor
-#include "ArduinoJson.h" // Necessario para comunicao com o servidor
+#include "LibJson.h" // Necessario para comunicao com o servidor
 
 /* Configuração Wifi */
 const char* ssid = "lucas";
@@ -35,13 +35,14 @@ Keypad meuteclado = Keypad( makeKeymap(matriz_teclas), PinosqtdLinhas, PinosqtdC
 
 /* Configuração das URLs para Comunicação com o Servidor */
 String senhaDigitada = "";
-String urlBase = "http://192.168.1.102:3000/api/post/registro?senha=";
-String urlSincronizarRelogio = "http://192.168.1.102:3000/api/get/sincronizar/relogio";
+String urlBase = "http://10.1.2.55:3000/api/post/registro?senha=";
+String urlSincronizarRelogio = "http://10.1.2.55:3000/api/get/sincronizar/relogio";
 
 void setup()
 {
   
     Serial.begin(9600); //INICIALIZA A SERIAL
+
     
     //setiup do Wifi
     WiFi.begin(ssid, password);
@@ -75,7 +76,7 @@ void loop(){
         if(digitosColaborador < 5){
           
            if (tecla_pressionada){ //SE ALGUMA TECLA FOR PRESSIONADA, FAZ
-            
+            Serial.println(tecla_pressionada);
             lcd.write(tecla_pressionada);
             delay(200);
 

@@ -23,6 +23,18 @@ Vue.component('registro-item', {
     methods: {
 
 
+        converteData(data){
+
+            var today = new Date(data);
+            var date = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            var dateTime = time+' - '+date;
+
+            return dateTime;
+
+        },
+
+
         getDadosColaboradorDoServidor(){
             fetch('api/get/colaborador/' + this.colaboradorId)
             .then(response => response.json())
@@ -53,7 +65,7 @@ Vue.component('registro-item', {
     <span v-else class="label label-purple label-rounded">SAÍDA</span> 
     
     </td>
-    <td class="txt-oflo">{{ createdAt }}</td>
+    <td class="txt-oflo">{{ converteData(createdAt) }}</td>
     <td>
         
         <button alt="Dados do colaborador"  title="Dados do colaborador" type="button" class="btn btn-info btn-md">
