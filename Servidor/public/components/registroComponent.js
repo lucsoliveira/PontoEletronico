@@ -58,7 +58,7 @@ Vue.component('registro-item', {
     <tr>
                            
     <td class="txt-oflo">#{{ id }}</td> 
-    <td class="txt-oflo">{{ colaboradorDados.id }} - {{ colaboradorDados.nomeCompleto }}</td>
+    <td class="txt-oflo">{{ colaboradorDados.nomeCompleto }}</td>
 
     <td>
     <span v-if="tipo == 1" class="label label-success label-rounded">ENTRADA</span> 
