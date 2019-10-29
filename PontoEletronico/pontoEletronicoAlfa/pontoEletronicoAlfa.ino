@@ -2,7 +2,13 @@
 #include <Keypad.h> //Necessario para o teclado
 #include <WiFi.h> //Necessario para Wifi
 #include <HTTPClient.h> // Necessario para comunicao com o servidor
-#include "LibJson.h" // Necessario para comunicao com o servidor
+#include "LibJson.h" // Necessario para serialização dos dados recebidos do servidor
+#include <SimpleTimer.h>  // Necessario para facilitar o temporizador
+
+/* Configuração das URLs para Comunicação com o Servidor */
+String senhaDigitada = "";
+String urlBase = "http://10.1.2.55:3000/api/post/registro?senha=";
+String urlSincronizarRelogio = "http://10.1.2.55:3000/api/get/sincronizar/relogio";
 
 /* Configuração Wifi */
 const char* ssid = "lucas";
@@ -33,10 +39,17 @@ byte PinosqtdColunas[qtdColunas] = {26,25,33,32}; //PINOS UTILIZADOS PELAS COLUN
 Keypad meuteclado = Keypad( makeKeymap(matriz_teclas), PinosqtdLinhas, PinosqtdColunas, qtdLinhas, qtdColunas); 
 /* Fim Configuração do Teclado */
 
-/* Configuração das URLs para Comunicação com o Servidor */
-String senhaDigitada = "";
-String urlBase = "http://10.1.2.55:3000/api/post/registro?senha=";
-String urlSincronizarRelogio = "http://10.1.2.55:3000/api/get/sincronizar/relogio";
+//Criação do objeto timer
+SimpleTimer timer;
+
+
+//Funcao de mostrar o relogio na tela
+void mostrarMensagemDigitarSenha(){
+  lcd.clear();
+  lcd.print(sincronizacaoRelogio());
+  lcd.setCursor(0,1); 
+  lcd.print("Senha: ");
+}
 
 void setup()
 {
@@ -49,8 +62,13 @@ void setup()
  
       while (WiFi.status() != WL_CONNECTED) {
         mostrarMensagemDisplay("Conectando na Rede...", 0);
-        delay(1000);
+       
+        timer.setInterval(60000, mostrarMensagemDigitarSenha);
+        
+         delay(1000);
         Serial.println("Connecting to WiFi..");
+
+        
       }
  
     Serial.println("Connected to the WiFi network");
@@ -68,6 +86,8 @@ void loop(){
     
 
     while(1){
+
+      timer.run();
           //Inicio para pegar os dados digitados na tela
           char tecla_pressionada = meuteclado.getKey(); //VERIFICA SE ALGUMA DAS TECLAS FOI PRESSIONADA
       
@@ -99,13 +119,6 @@ void loop(){
  
  }
 
-void mostrarMensagemDigitarSenha(){
-
-  
-  lcd.print(sincronizacaoRelogio());
-  lcd.setCursor(0,1); 
-  lcd.print("Senha: ");
-}
  void mostrarMensagemDisplay(String mensagem, int time){
 
       lcd.clear();
